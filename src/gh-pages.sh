@@ -57,14 +57,19 @@ initGitRepo() {
     isGitRepo || fail 'Failed to create git repo.'
 }
 
+commitAndPush() {
+    git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
+    git push origin
+}
+
 help() {
     echo '
 NAME
     gh-pages - Synchronize documentation with GitHub pages.
 
 SYNOPSIS
-    gh-pages DIR          : publish contents of DIR to projects gh-pages
-    gh-pages -h|--help    : display this help and exit
+    gh-pages [OPTION]... DIR   : publish contents of DIR to projects gh-pages
+    gh-pages -h|--help         : display this help and exit
 
 DESCRIPTION
     Push the project documentation (found in DIR) to the projects gh-pages
@@ -72,7 +77,8 @@ DESCRIPTION
     Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 
 OPTIONS:
-    -h, --help            : display this help and exit
+    --force                    : assume yes on all prompts
+    -h, --help                 : display this help and exit
 
 USAGE:
     make html && gh-pages html
@@ -112,32 +118,39 @@ main() {
         exit 0
     fi
 
-    echo '========== Files to be commited =========='
-    git status --short
-    # -p prompt
-    # -n read returns after reading nchars characters
-    # -r backslash does not act as an escape character
-    read -p 'Are you sure you want to commit the changes? [y] ' -n 1 -r
-    echo
-    case "${REPLY}" in
-        y|Y)
-            git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
-            git push origin
-            ;;
-        *)
-            echo 'Aborting!'
-            git reset --hard
-            ;;
-    esac
+    if test True == "${force}"; then
+        commitAndPush
+    else
+        echo '========== Files to be commited =========='
+        git status --short
+        # -p prompt
+        # -n read returns after reading nchars characters
+        # -r backslash does not act as an escape character
+        read -p 'Are you sure you want to commit the changes? [y] ' -n 1 -r
+        echo
+        case "${REPLY}" in
+            y|Y)
+                commitAndPush
+                ;;
+            *)
+                echo 'Aborting!'
+                git reset --hard
+                ;;
+        esac
+    fi
 }
 
 # parse command line arguments
 task='help'
+force=False
 while [[ $# > 0 ]]; do
     case "${1}" in
         -h|--help)
             help
             exit 0
+            ;;
+        --force)
+            force=True
             ;;
         *)
             task='main'

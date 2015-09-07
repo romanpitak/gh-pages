@@ -12,8 +12,8 @@ Where `html` is the directory containing the html documentation files.
 
 ## Synopsis
 
-    gh-pages DIR          : publish contents of DIR to projects gh-pages
-    gh-pages -h|--help    : display help and exit
+    gh-pages [OPTION]... DIR   : publish contents of DIR to projects gh-pages
+    gh-pages -h|--help         : display this help and exit
 
 ## Description
 
@@ -23,7 +23,8 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 
 ## Options
 
-    -h, --help            : display help and exit
+    --force                    : assume yes on all prompts
+    -h, --help                 : display this help and exit
 
 ## Installation
 
