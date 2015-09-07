@@ -106,6 +106,12 @@ main() {
     rsync --archive --delete --exclude='.git' "${sourceDirectory}/" .
     git add --all
 
+    # Check if anything actually changed and exit if not.
+    if test 0 == "$(git status --short | wc --lines)"; then
+        echo 'Already up-to-date. Nothing to be done.'
+        exit 0
+    fi
+
     echo '========== Files to be commited =========='
     git status --short
     # -p prompt
