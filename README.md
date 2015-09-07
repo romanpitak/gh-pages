@@ -10,6 +10,13 @@ gh-pages html
 
 Where `html` is the directory containing the html documentation files.
 
+A `Makefile` target example:
+
+```make
+gh-pages: html_dir
+    gh-pages --force $<
+```
+
 ## Synopsis
 
     gh-pages [OPTION]... DIR   : publish contents of DIR to projects gh-pages
