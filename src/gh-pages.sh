@@ -105,8 +105,24 @@ main() {
 
     rsync --archive --delete --exclude='.git' "${sourceDirectory}/" .
     git add --all
-    git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
-    git push origin
+
+    echo '========== Files to be commited =========='
+    git status --short
+    # -p prompt
+    # -n read returns after reading nchars characters
+    # -r backslash does not act as an escape character
+    read -p 'Are you sure you want to commit the changes? [y] ' -n 1 -r
+    echo
+    case "${REPLY}" in
+        y|Y)
+            git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
+            git push origin
+            ;;
+        *)
+            echo 'Aborting!'
+            git reset --hard
+            ;;
+    esac
 }
 
 # parse command line arguments
