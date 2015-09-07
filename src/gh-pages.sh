@@ -23,32 +23,36 @@ isGitRepo() {
 
 remoteHasGhPages() {
     # Check if origin has a branch called "gh-pages"
+    echo '>>> Looking for gh-pages on remote...'
     git branch --list --remote | \
         grep --silent --regexp='^  origin/gh-pages$'
 }
 
 checkoutGhPages() {
     # Checkout the (existing) gh-pages branch from origin.
+    echo '>>> Checking out gh-pages from remote...'
     git fetch origin gh-pages:refs/remotes/origin/gh-pages
-    git checkout gh-pages
+    git checkout gh-pages 2>&1
 }
 
 initGhPages() {
     # Initialize the "gh-pages" branch with an index.html file.
-    git checkout --orphan gh-pages
+    echo '>>> Creating a new gh-pagex branch...'
+    git checkout --orphan gh-pages 2>&1
     echo 'Let there be documentation!' > index.html
     git add index.html
     git ci -m 'first commit'
-    git push origin gh-pages --set-upstream
+    git push origin gh-pages --set-upstream 2>&1
 }
 
 initGitRepo() {
     # Create a git repo in the current directory and
     # - checkout the gh-pages branch
     # - or initialize the gh-pages branch.
+    echo '>>> Initiating local clone...'
     git init
     git remote add origin "${origin}"
-    git fetch
+    git fetch 2>&1
     if remoteHasGhPages; then
         checkoutGhPages
     else
@@ -58,8 +62,10 @@ initGitRepo() {
 }
 
 commitAndPush() {
+    echo '>>> pushing the changes...'
     git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
-    git push origin
+    git push origin 2>&1
+    echo '>>> DONE'
 }
 
 help() {
@@ -79,6 +85,7 @@ DESCRIPTION
 OPTIONS:
     --force                    : assume yes on all prompts
     -h, --help                 : display this help and exit
+    --verbose                  : explain what is being done
 
 USAGE:
     make html && gh-pages html
@@ -106,20 +113,21 @@ main() {
 
     mkdir -p "${destinationDirectory}"
     cd "${destinationDirectory}"
-    isGitRepo || initGitRepo
-    git pull
+    isGitRepo || initGitRepo >> "${verboseOutput}"
+    git pull >> "${verboseOutput}"
 
     rsync --archive --delete --exclude='.git' "${sourceDirectory}/" .
     git add --all
 
     # Check if anything actually changed and exit if not.
     if test 0 == "$(git status --short | wc --lines)"; then
-        echo 'Already up-to-date. Nothing to be done.'
+        message='>>> gh-pages up-to-date. Nothing to be done.'
+        echo "${message}" >> "${verboseOutput}"
         exit 0
     fi
 
     if test True == "${force}"; then
-        commitAndPush
+        commitAndPush >> "${verboseOutput}"
     else
         echo '========== Files to be commited =========='
         git status --short
@@ -129,8 +137,8 @@ main() {
         read -p 'Are you sure you want to commit the changes? [y] ' -n 1 -r
         echo
         case "${REPLY}" in
-            y|Y)
-                commitAndPush
+            y|Y|'')
+                commitAndPush >> "${verboseOutput}"
                 ;;
             *)
                 echo 'Aborting!'
@@ -143,6 +151,7 @@ main() {
 # parse command line arguments
 task='help'
 force=False
+verboseOutput='/dev/null'
 while [[ $# > 0 ]]; do
     case "${1}" in
         -h|--help)
@@ -151,6 +160,9 @@ while [[ $# > 0 ]]; do
             ;;
         --force)
             force=True
+            ;;
+        --verbose)
+            verboseOutput='/dev/stdout'
             ;;
         *)
             task='main'

@@ -25,6 +25,7 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 
     --force                    : assume yes on all prompts
     -h, --help                 : display this help and exit
+    --verbose                  : explain what is being done
 
 ## Installation
 
