@@ -84,6 +84,12 @@ while [[ $# > 0 ]]; do
         -h|--help)
             help; exit 0
             ;;
+        --in-file=*)
+            inFileArg="${1//--in-file=/}"
+            ;;
+        --out-file=*)
+            outFileArg="${1//--out-file=/}"
+            ;;
         --preprocessor-suffix=*)
             preprocessorSuffix="${1//--preprocessor-suffix=/}"
             ;;
@@ -106,6 +112,25 @@ while [[ $# > 0 ]]; do
     esac
     shift
 done
+
+if test -n ${inFileArg+isset} && test -n ${outFileArg+isset}; then
+
+    if test '-' == "${inFileArg}"; then
+        inFile='/dev/stdin'
+    else
+        inFile="${inFileArg}"
+    fi
+
+    if test '-' == "${outFileArg}"; then
+        outFile='/dev/stdout'
+    else
+        outFile="${outFileArg}"
+    fi
+
+elif test -n ${inFileArg+isset} || test -n ${outFileArg+isset}; then
+    echo '--in-file and --out-file must always be together' >> "${stdErr}"
+    exit 1
+fi
 
 if test 0 -ne ${#overrideVariables[@]}; then
     unset variables
