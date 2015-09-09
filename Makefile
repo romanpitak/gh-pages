@@ -1,7 +1,7 @@
 
-INSTALL_PATH=# <<< configure
-INVOCATION_COMMAND=# <<< configure
-VERSION=# <<< configure
+INSTALL_PATH=${HOME}/bin# <<< configure
+INVOCATION_COMMAND=gh-pages# <<< configure
+VERSION=0.0.0# <<< configure
 
 .PHONY: all clean install uninstall
 
@@ -22,8 +22,6 @@ clean:
 install: gh-pages.sh
 	mkdir --parents "$(INSTALL_PATH)"
 	cp "$<" "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
-	mkdir --parents "${HOME}/.gh-pages"
 
 uninstall:
 	rm --force "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
-	rm --recursive --force "${HOME}/.gh-pages"
