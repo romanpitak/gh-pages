@@ -21,6 +21,7 @@ gh-pages: html_dir
 
     gh-pages [OPTION]... DIR   : publish contents of DIR to projects gh-pages
     gh-pages -h|--help         : display this help and exit
+    gh-pages --version         : print version and exit
 
 ## Description
 
@@ -33,6 +34,7 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
     --force                    : assume yes on all prompts
     -h, --help                 : display this help and exit
     --verbose                  : explain what is being done
+    --version                  : print version and exit
 
 ## Installation
 

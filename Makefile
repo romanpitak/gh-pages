@@ -1,13 +1,27 @@
 
 INSTALL_PATH=# <<< configure
 INVOCATION_COMMAND=# <<< configure
+VERSION=# <<< configure
 
-.PHONY: install uninstall
+.PHONY: all clean install uninstall
 
-install:
+gh-pages.sh: src/gh-pages.sh
+	./configure \
+		--silent \
+		--variable-VERSION="$(VERSION)" \
+		--preprocessor-suffix=' # <<< configure' \
+		--in-file="$<" \
+		--out-file="$@"
+	chmod a+x gh-pages.sh
+
+all: gh-pages.sh
+
+clean:
+	rm --force 'gh-pages.sh'
+
+install: gh-pages.sh
 	mkdir --parents "$(INSTALL_PATH)"
-	cp src/gh-pages.sh "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
-	chmod u+x "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
+	cp "$<" "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
 	mkdir --parents "${HOME}/.gh-pages"
 
 uninstall:

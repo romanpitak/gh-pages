@@ -21,6 +21,7 @@ outFile="${inFile}"
 declare -A variables
 variables['INSTALL_PATH']="${HOME}/bin"
 variables['INVOCATION_COMMAND']='gh-pages'
+variables['VERSION']='0.2.0'
 
 # Author Name <author.email@example.com>
 author='Roman Piták <roman@pitak.net>'
@@ -40,7 +41,7 @@ OPTIONS:
 successMessage='
 Configuration successfull!
 You can now run
-\n\tmake install\n
+\n\tmake && make install\n
 to complete the installation.
 '
 ############################################################
@@ -113,7 +114,7 @@ while [[ $# > 0 ]]; do
     shift
 done
 
-if test -n ${inFileArg+isset} && test -n ${outFileArg+isset}; then
+if test -n "${inFileArg+isset}" && test -n "${outFileArg+isset}"; then
 
     if test '-' == "${inFileArg}"; then
         inFile='/dev/stdin'
@@ -127,7 +128,7 @@ if test -n ${inFileArg+isset} && test -n ${outFileArg+isset}; then
         outFile="${outFileArg}"
     fi
 
-elif test -n ${inFileArg+isset} || test -n ${outFileArg+isset}; then
+elif test -n "${inFileArg+isset}" || test -n "${outFileArg+isset}"; then
     echo '--in-file and --out-file must always be together' >> "${stdErr}"
     exit 1
 fi

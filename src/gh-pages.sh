@@ -10,6 +10,8 @@
 
 set -eu
 
+VERSION=0.0.0 # <<< configure
+
 fail() {
     # Fail with a message and exit.
     echo "${1:-FAILED}" 1>&2
@@ -76,6 +78,7 @@ NAME
 SYNOPSIS
     gh-pages [OPTION]... DIR   : publish contents of DIR to projects gh-pages
     gh-pages -h|--help         : display this help and exit
+    gh-pages --version         : print version and exit
 
 DESCRIPTION
     Push the project documentation (found in DIR) to the projects gh-pages
@@ -86,6 +89,7 @@ OPTIONS:
     --force                    : assume yes on all prompts
     -h, --help                 : display this help and exit
     --verbose                  : explain what is being done
+    --version                  : print version and exit
 
 USAGE:
     make html && gh-pages html
@@ -163,6 +167,10 @@ while [[ $# > 0 ]]; do
             ;;
         --verbose)
             verboseOutput='/dev/stdout'
+            ;;
+        --version)
+            echo "${VERSION}"
+            exit 0
             ;;
         *)
             task='main'
