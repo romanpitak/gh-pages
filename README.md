@@ -39,7 +39,7 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 ```bash
 git clone git@github.com:romanpitak/gh-pages.git
 cd gh-pages
-make install
+./configure && make install
 ```
 
 The install script copies the `gh-pages` executable to `~/bin`
