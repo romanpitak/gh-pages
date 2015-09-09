@@ -41,14 +41,23 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 ```bash
 git clone git@github.com:romanpitak/gh-pages.git
 cd gh-pages
-./configure && make install
+./configure && make && make install
 ```
 
-The install script copies the `gh-pages` executable to `~/bin`
-and creates a directory `~/.gh-pages` to store the documentation branches.
+By default, the install script copies the `gh-pages` executable to `~/bin`.
+On first run, the script creates the `~/.gh-pages` directory to store
+the checked out branches.
+
+You can change the installation directory and the command name
+by running `./configure`
+with options `--install-path` or `--invocation-command`.
+For more configuration info run `./configure --help`.
+
+**Pro tip:** `make --dry-run` will show you what will be done. 
 
 ### Uninstall
 
 ```bash
 make uninstall
+rm -rf ~/.gh-pages  # to delete the data
 ```
