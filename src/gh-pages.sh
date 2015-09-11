@@ -133,7 +133,7 @@ function ghp::init_git_repo() {
 # Commit the current changes and push
 #
 # Globals:
-#   None
+#   commit_message
 # Calls:
 #   None
 # Arguments:
@@ -143,7 +143,13 @@ function ghp::init_git_repo() {
 ###############################################################################
 function ghp::commit_and_push() {
     printf '%s\n' '>>> pushing the changes...'
-    git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
+    local message
+    if test -n "${commit_message:-}"; then
+        message="${commit_message}"
+    else
+        message="documentation update $(date '+%Y-%m-%d %H:%M:%S')"
+    fi
+    git commit -m "${message}"
     git push origin 2>&1
     printf '%s\n' '>>> DONE'
 }
@@ -180,6 +186,7 @@ OPTIONS:
     -h, --help                 : display this help and exit
     --verbose                  : explain what is being done
     --version                  : print version and exit
+    --what-the-commit          : use http://whatthecommit.com/
 
 USAGE:
     make html && gh-pages html
@@ -277,6 +284,24 @@ while [[ $# > 0 ]]; do
         --version)
             printf '%s\n' "${VERSION}"
             exit 0
+            ;;
+        --what-the-commit)
+            if command -v 'curl' >/dev/null 2>&1; then
+                commit_message="$(
+                    curl \
+                        --silent \
+                        'http://whatthecommit.com/index.txt'
+                    )"
+            elif command -v 'wget' >/dev/null 2>&1; then
+                commit_message="$(
+                    wget \
+                        --quiet \
+                        --output-document=- \
+                        'http://whatthecommit.com/index.txt'\
+                    )"
+            else
+                ghp::fail 'You need curl or wget to use --what-the-commit'
+            fi
             ;;
         *)
             if test ! -d "${1}"; then

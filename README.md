@@ -7,6 +7,7 @@
 - Automatically pulls before adding changes.
 - Prompts before commiting (May be turned off by `--force`).
 - Local installation (May be installed globally with `./configure`).
+- [whatthecommit.com](http://whatthecommit.com/) integration.
 - Nicely written and well documented.
 
 ## Usage
@@ -39,9 +40,10 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 ## Options
 
     --force                    : assume yes on all prompts
-    -h, --help                 : display this help and exit
+    -h, --help                 : display help and exit
     --verbose                  : explain what is being done
     --version                  : print version and exit
+    --what-the-commit          : use http://whatthecommit.com/
 
 ## Installation
 
@@ -74,7 +76,7 @@ rm -rf ~/.gh-pages  # to delete the data
 The important parts of the code:
 
 ```bash
-cd "${destinationDirectory}"  # ~/.gh-pages/user/repo
+cd "${destination_dir}"  # ~/.gh-pages/user/repo
 if first_time_here; then
     if remote_already_has_gh_pages; then
         git fetch 'origin' 'gh-pages:refs/remotes/origin/gh-pages'
@@ -86,7 +88,7 @@ if first_time_here; then
     fi
 fi
 git pull
-rsync --archive --delete --exclude='.git' "${sourceDirectory}/" .
+rsync --archive --delete --exclude='.git' "${source_dir}/" .
 git add --all
 git commit
 git push
