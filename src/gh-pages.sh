@@ -12,66 +12,156 @@ set -eu
 
 VERSION=0.0.0 # <<< configure
 
-fail() {
-    # Fail with a message and exit.
-    echo "${1:-FAILED}" 1>&2
+###############################################################################
+# Fail with a message and exit.
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   message || None
+# Returns:
+#   None
+###############################################################################
+function ghp::fail() {
+    printf '%s\n' "${1:-FAILED}" 1>&2
     exit 1
 }
 
-isGitRepo() {
-    # Check if the current directory is a valid git repository.
+###############################################################################
+# Check if the current directory is a valid git repository.
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::is_git_repo() {
     git status > /dev/null 2>&1
 }
 
-remoteHasGhPages() {
-    # Check if origin has a branch called "gh-pages"
-    echo '>>> Looking for gh-pages on remote...'
-    git branch --list --remote | \
-        grep --silent --regexp='^  origin/gh-pages$'
+###############################################################################
+# Check if origin has a branch called "gh-pages".
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::remote_has_gh_pages() {
+    printf '%s\n' '>>> Looking for gh-pages on remote...'
+    git branch --list --remote \
+        | grep --silent --regexp='^  origin/gh-pages$'
 }
 
-checkoutGhPages() {
-    # Checkout the (existing) gh-pages branch from origin.
-    echo '>>> Checking out gh-pages from remote...'
+###############################################################################
+# Checkout the (existing) gh-pages branch from origin.
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::checkout_gh_pages() {
+    printf '%s\n' '>>> Checking out gh-pages from remote...'
     git fetch origin gh-pages:refs/remotes/origin/gh-pages
     git checkout gh-pages 2>&1
 }
 
-initGhPages() {
-    # Initialize the "gh-pages" branch with an index.html file.
-    echo '>>> Creating a new gh-pagex branch...'
+###############################################################################
+# Initialize new "gh-pages" branch with an index.html file.
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::init_gh_pages() {
+    printf '%s\n' '>>> Creating a new gh-pagex branch...'
     git checkout --orphan gh-pages 2>&1
-    echo 'Let there be documentation!' > index.html
+    printf '%s\n' 'Let there be documentation!' > index.html
     git add index.html
     git ci -m 'first commit'
     git push origin gh-pages --set-upstream 2>&1
 }
 
-initGitRepo() {
-    # Create a git repo in the current directory and
-    # - checkout the gh-pages branch
-    # - or initialize the gh-pages branch.
-    echo '>>> Initiating local clone...'
+###############################################################################
+# Create a git repo in the current directory and
+# - checkout the gh-pages branch
+# - or initialize the gh-pages branch.
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::init_git_repo() {
+    printf '%s\n' '>>> Initiating local clone...'
     git init
     git remote add origin "${origin}"
     git fetch 2>&1
-    if remoteHasGhPages; then
-        checkoutGhPages
+    if ghp::remote_has_gh_pages; then
+        ghp::checkout_gh_pages
     else
-        initGhPages
+        ghp::init_gh_pages
     fi
-    isGitRepo || fail 'Failed to create git repo.'
+    ghp::is_git_repo || fail 'Failed to create git repo.'
 }
 
-commitAndPush() {
-    echo '>>> pushing the changes...'
+###############################################################################
+# Commit the current changes and push
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::commit_and_push() {
+    printf '%s\n' '>>> pushing the changes...'
     git commit -m "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
     git push origin 2>&1
-    echo '>>> DONE'
+    printf '%s\n' '>>> DONE'
 }
 
-help() {
-    echo '
+###############################################################################
+# Print help
+#
+# Globals:
+#   None
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::help() {
+    printf '%s\n' '
 NAME
     gh-pages - Synchronize documentation with GitHub pages.
 
@@ -99,95 +189,113 @@ USAGE:
 '
 }
 
-main() {
-    # rsync the given directory into the gh-pages branch
-    # of the directorys git repository
+###############################################################################
+# rsync the given directory into the gh-pages branch
+# of the directorys git repository
+#
+# Globals:
+#   source_path
+#   force
+#   verbose_output
+# Calls:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+###############################################################################
+function ghp::main() {
 
-    isGitRepo || fail "$(pwd) is not a Git repository."
+    ghp::is_git_repo || fail "$(pwd) is not a Git repository."
 
-    sourceDirectory="$(cd "${1}" && pwd)" \
-        || fail "Could not access source directory \"${1}\""
+    local source_directory="$(cd "${1}" && pwd)" \
+        || ghp::fail "Could not access source directory \"${1}\""
 
-    origin="$(git config --get remote.origin.url)" \
-        || fail 'Remote "origin" not found.'
-    destinationDirectory="$(echo "${origin}" | \
+    local origin="$(git config --get remote.origin.url)" \
+        || ghp::fail 'Remote "origin" not found.'
+    local destination_directory="$(printf '%s\n' "${origin}" | \
         sed -n -e 's/^git@github\.com:\(.*\)\.git$/\1/p')"
-    test '' != "${destinationDirectory}" || fail 'Not a GitHub repo.'
-    destinationDirectory="${HOME}/.gh-pages/${destinationDirectory}"
+    test -n "${destination_directory}" \
+        || ghp::fail 'Not a GitHub repo.'
+    destination_directory="${HOME}/.gh-pages/${destination_directory}"
 
-    mkdir -p "${destinationDirectory}"
-    cd "${destinationDirectory}"
-    isGitRepo || initGitRepo >> "${verboseOutput}"
-    git pull >> "${verboseOutput}"
+    mkdir -p "${destination_directory}"
+    cd "${destination_directory}"
+    ghp::is_git_repo || ghp::init_git_repo >> "${verbose_output}"
+    git pull >> "${verbose_output}"
 
-    rsync --archive --delete --exclude='.git' "${sourceDirectory}/" .
+    rsync --archive --delete --exclude='.git' "${source_directory}/" .
     git add --all
 
     # Check if anything actually changed and exit if not.
     if test 0 == "$(git status --short | wc --lines)"; then
-        message='>>> gh-pages up-to-date. Nothing to be done.'
-        echo "${message}" >> "${verboseOutput}"
+        printf '%s\n' '>>> gh-pages up-to-date. Nothing to be done.' \
+            >> "${verbose_output}"
         exit 0
     fi
 
     if test True == "${force}"; then
-        commitAndPush >> "${verboseOutput}"
+        ghp::commit_and_push >> "${verbose_output}"
     else
-        echo '========== Files to be commited =========='
+        printf '%s\n' '========== Files to be commited =========='
         git status --short
         # -p prompt
         # -n read returns after reading nchars characters
         # -r backslash does not act as an escape character
         read -p 'Are you sure you want to commit the changes? [y] ' -n 1 -r
-        echo
+        printf '\n'
         case "${REPLY}" in
             y|Y|'')
-                commitAndPush >> "${verboseOutput}"
+                ghp::commit_and_push >> "${verbose_output}"
                 ;;
             *)
-                echo 'Aborting!'
+                printf '%s\n' 'Aborting!'
                 git reset --hard
                 ;;
         esac
     fi
 }
 
-# parse command line arguments
-task='help'
+###############################################################################
+#                     command line arguments processing
+###############################################################################
+
 force=False
-verboseOutput='/dev/null'
+verbose_output='/dev/null'
 while [[ $# > 0 ]]; do
     case "${1}" in
         -h|--help)
-            help
+            ghp::help
             exit 0
             ;;
         --force)
             force=True
             ;;
         --verbose)
-            verboseOutput='/dev/stdout'
+            verbose_output='/dev/stdout'
             ;;
         --version)
-            echo "${VERSION}"
+            printf '%s\n' "${VERSION}"
             exit 0
             ;;
         *)
-            task='main'
-            sourcePath="${1}"
+            if test ! -d "${1}"; then
+                ghp::help
+                exit 1
+            fi
+            source_path="${1}"
             ;;
     esac
     shift
 done
 
-case "${task}" in
-    main)
-        main "${sourcePath}"
-        ;;
-    help)
-        help
-        ;;
-    *)
-        fail 'Unexpected error. Please report this to roman@pitak.net'
-        ;;
-esac
+###############################################################################
+#                                 main
+###############################################################################
+
+if test -z "${source_path:-}"; then
+    ghp::help
+    exit 1
+fi
+
+ghp::main "${source_path}"
