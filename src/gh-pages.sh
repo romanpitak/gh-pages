@@ -182,12 +182,32 @@ DESCRIPTION
     Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 
 OPTIONS:
-    --force                    : assume yes on all prompts
-    -h, --help                 : display this help and exit
-    -m, --message  <msg>       : specify the commit message
-    --verbose                  : explain what is being done
-    --version                  : print version and exit
-    --what-the-commit          : use http://whatthecommit.com/
+
+    --force
+
+            Assume yes on all prompts. Automatically commit and push changes and new files.
+
+    -h
+    --help
+
+            Display this help and exit.
+
+    -m <msg>
+    --message  <msg>
+
+            Specify the commit message. You cannot specify an empty message.
+
+    --verbose
+
+            Explain what is being done. Displays git output.
+
+    --version
+
+            Print version and exit.
+
+    --what-the-commit
+
+            Use a "random" commit message from http://whatthecommit.com/.
 
 USAGE:
     make html && gh-pages html
