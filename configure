@@ -21,7 +21,7 @@ outFile="${inFile}"
 declare -A variables
 variables['INSTALL_PATH']="${HOME}/bin"
 variables['INVOCATION_COMMAND']='gh-pages'
-variables['VERSION']='0.2.0'
+variables['VERSION']='0.3.0'
 
 # Author Name <author.email@example.com>
 author='Roman Piták <roman@pitak.net>'
