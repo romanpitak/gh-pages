@@ -184,6 +184,7 @@ DESCRIPTION
 OPTIONS:
     --force                    : assume yes on all prompts
     -h, --help                 : display this help and exit
+    -m, --message  <msg>       : specify the commit message
     --verbose                  : explain what is being done
     --version                  : print version and exit
     --what-the-commit          : use http://whatthecommit.com/
@@ -277,6 +278,12 @@ while [[ $# > 0 ]]; do
             ;;
         --force)
             force=True
+            ;;
+        -m|--message)
+            commit_message="${2:-}"
+            test -n "${commit_message}" \
+                || ghp::fail 'You need to specify a commit message.'
+            shift
             ;;
         --verbose)
             verbose_output='/dev/stdout'

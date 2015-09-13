@@ -41,6 +41,7 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 
     --force                    : assume yes on all prompts
     -h, --help                 : display help and exit
+    -m, --message  <msg>       : specify the commit message
     --verbose                  : explain what is being done
     --version                  : print version and exit
     --what-the-commit          : use http://whatthecommit.com/
