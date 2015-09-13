@@ -313,7 +313,7 @@ while [[ $# > 0 ]]; do
         *)
             if test ! -d "${1}"; then
                 ghp::help
-                exit 1
+                ghp::fail 'Not a directory.'
             fi
             source_path="${1}"
             ;;
@@ -327,7 +327,7 @@ done
 
 if test -z "${source_path:-}"; then
     ghp::help
-    exit 1
+    ghp::fail 'Content directory not specified.'
 fi
 
 ghp::main "${source_path}"
