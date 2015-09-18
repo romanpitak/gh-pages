@@ -309,7 +309,11 @@ while [[ $# > 0 ]]; do
             verbose_output='/dev/stdout'
             ;;
         --version)
-            printf '%s\n' "${VERSION}"
+            printf '%s\n' "gh-pages ${VERSION}"
+            printf '%s\n' 'Copyright (C) 2015 Roman Piták <roman@pitak.net>'
+            printf '%s\n' "License MIT"
+            printf '%s\n' 'This is free software: you are free to change and redistribute it.'
+            printf '%s\n' 'There is NO WARRANTY, to the extent permitted by law.'
             exit 0
             ;;
         --what-the-commit)
