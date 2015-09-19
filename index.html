@@ -1,56 +1,123 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
-<head>
- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
- <meta name="Author" content="Made by 'tree'">
- <meta name="GENERATOR" content="$Version: $ tree v1.6.0 (c) 1996 - 2011 by Steve Baker, Thomas Moore, Francesc Rocher, Kyosuke Tokoro $">
- <title>Directory Tree</title>
- <style type="text/css">
-  <!--
-  BODY { font-family : ariel, monospace, sans-serif; }
-  P { font-weight: normal; font-family : ariel, monospace, sans-serif; color: black; background-color: transparent;}
-  B { font-weight: normal; color: black; background-color: transparent;}
-  A:visited { font-weight : normal; text-decoration : none; background-color : transparent; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:link    { font-weight : normal; text-decoration : none; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:hover   { color : #000000; font-weight : normal; text-decoration : underline; background-color : yellow; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:active  { color : #000000; font-weight: normal; background-color : transparent; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  .VERSION { font-size: small; font-family : arial, sans-serif; }
-  .NORM  { color: black;  background-color: transparent;}
-  .FIFO  { color: purple; background-color: transparent;}
-  .CHAR  { color: yellow; background-color: transparent;}
-  .DIR   { color: blue;   background-color: transparent;}
-  .BLOCK { color: yellow; background-color: transparent;}
-  .LINK  { color: aqua;   background-color: transparent;}
-  .SOCK  { color: fuchsia;background-color: transparent;}
-  .EXEC  { color: green;  background-color: transparent;}
-  -->
- </style>
-</head>
-<body>
-	<h1>Directory Tree</h1><p>
-	<a href="./">./</a><br>
-	├── <a href=".//configure">configure</a><br>
-	├── <a href=".//gh-pages.sh">gh-pages.sh</a><br>
-	├── <a href=".//html/">html</a><br>
-	│   └── <a href=".//html/index.html">index.html</a><br>
-	├── <a href=".//LICENSE">LICENSE</a><br>
-	├── <a href=".//Makefile">Makefile</a><br>
-	├── <a href=".//README.md">README.md</a><br>
-	└── <a href=".//src/">src</a><br>
-	&nbsp;&nbsp;&nbsp; └── <a href=".//src/gh-pages.sh">gh-pages.sh</a><br>
-	<br><br>
-	</p>
-	<p>
-
-2 directories, 7 files
-
-	<br><br>
-	</p>
-	<hr>
-	<p class="VERSION">
-		 tree v1.6.0 © 1996 - 2011 by Steve Baker and Thomas Moore <br>
-		 HTML output hacked and copyleft © 1998 by Francesc Rocher <br>
-		 Charsets / OS/2 support © 2001 by Kyosuke Tokoro
-	</p>
-</body>
+    <head>
+          <meta charset="utf-8">
+          <meta name="generator" content="pandoc">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+                          <title></title>
+          <style type="text/css">code{white-space: pre;}</style>
+          <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+          <![endif]-->
+                          <style type="text/css">
+        table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+          margin: 0; padding: 0; vertical-align: baseline; border: none; }
+        table.sourceCode { width: 100%; line-height: 100%; }
+        td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+        td.sourceCode { padding-left: 5px; }
+        code > span.kw { color: #007020; font-weight: bold; }
+        code > span.dt { color: #902000; }
+        code > span.dv { color: #40a070; }
+        code > span.bn { color: #40a070; }
+        code > span.fl { color: #40a070; }
+        code > span.ch { color: #4070a0; }
+        code > span.st { color: #4070a0; }
+        code > span.co { color: #60a0b0; font-style: italic; }
+        code > span.ot { color: #007020; }
+        code > span.al { color: #ff0000; font-weight: bold; }
+        code > span.fu { color: #06287e; }
+        code > span.er { color: #ff0000; font-weight: bold; }
+          </style>
+                                    </head>
+    <body>
+                                    <nav id="TOC">
+            <ul>
+            <li><a href="#gh-pages">gh-pages</a><ul>
+            <li><a href="#usage">Usage</a></li>
+            <li><a href="#synopsis">Synopsis</a></li>
+            <li><a href="#description">Description</a></li>
+            <li><a href="#options">Options</a></li>
+            <li><a href="#installation">Installation</a><ul>
+            <li><a href="#uninstall">Uninstall</a></li>
+            </ul></li>
+            <li><a href="#how-does-it-work">How does it work?</a></li>
+            </ul></li>
+            </ul>
+            </nav>
+                <section id="gh-pages" class="level1">
+<h1><a href="#gh-pages">gh-pages</a></h1>
+<p><strong>Synchronize documentation with GitHub pages</strong> with one command.</p>
+<ul>
+<li>Correctly creates the <code>gh-pages</code> branch if it does not yet exist.<br /></li>
+<li>Uses the <code>gh-pages</code> branch from remote if there is one.<br /></li>
+<li>Automatically pulls before adding changes.<br /></li>
+<li>Prompts before commiting (May be turned off by <code>--force</code>).<br /></li>
+<li>Local installation (May be installed globally with <code>./configure</code>).<br /></li>
+<li><a href="http://whatthecommit.com/">whatthecommit.com</a> integration.<br /></li>
+<li>Nicely written and well documented.</li>
+</ul>
+<section id="usage" class="level2">
+<h2><a href="#usage">Usage</a></h2>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gh-pages</span> html</code></pre>
+<p>Where <code>html</code> is the directory containing the html documentation files.</p>
+<p>A <code>Makefile</code> target example:</p>
+<pre class="make"><code>gh-pages: html_dir
+    gh-pages --force $&lt;</code></pre>
+</section>
+<section id="synopsis" class="level2">
+<h2><a href="#synopsis">Synopsis</a></h2>
+<pre><code>gh-pages [OPTION]... DIR   : publish contents of DIR to projects gh-pages
+gh-pages -h|--help         : display this help and exit
+gh-pages --version         : print version and exit</code></pre>
+</section>
+<section id="description" class="level2">
+<h2><a href="#description">Description</a></h2>
+<p>Push the project documentation (found in DIR) to the projects gh-pages<br />branch. If the branch does not exist, it will be created.<br />Commits format: &#8220;documentation update $(date &#8216;+%Y-%m-%d %H:%M:%S&#8217;)&#8221;</p>
+</section>
+<section id="options" class="level2">
+<h2><a href="#options">Options</a></h2>
+<pre><code>--force                    : assume yes on all prompts
+-h, --help                 : display help and exit
+-m, --message  &lt;msg&gt;       : specify the commit message
+--verbose                  : explain what is being done
+--version                  : print version and exit
+--what-the-commit          : use http://whatthecommit.com/</code></pre>
+</section>
+<section id="installation" class="level2">
+<h2><a href="#installation">Installation</a></h2>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">git</span> clone git@github.com:romanpitak/gh-pages.git
+<span class="kw">cd</span> gh-pages
+<span class="kw">./configure</span> <span class="kw">&amp;&amp;</span> <span class="kw">make</span> <span class="kw">&amp;&amp;</span> <span class="kw">make</span> install</code></pre>
+<p>By default, the install script copies the <code>gh-pages</code> executable to <code>~/bin</code>.<br />On first run, the script creates the <code>~/.gh-pages</code> directory to store<br />the checked out branches.</p>
+<p>You can change the installation directory and the command name<br />by running <code>./configure</code><br />with options <code>--install-path</code> or <code>--invocation-command</code>.<br />For more configuration info run <code>./configure --help</code>.</p>
+<p><strong>Pro tip:</strong> <code>make --dry-run</code> will show you what will be done.</p>
+<section id="uninstall" class="level3">
+<h3><a href="#uninstall">Uninstall</a></h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">make</span> uninstall
+<span class="kw">rm</span> -rf ~/.gh-pages  <span class="co"># to delete the data</span></code></pre>
+</section>
+</section>
+<section id="how-does-it-work" class="level2">
+<h2><a href="#how-does-it-work">How does it work?</a></h2>
+<p>The important parts of the code:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="st">&quot;</span><span class="ot">${destination_dir}</span><span class="st">&quot;</span>  <span class="co"># ~/.gh-pages/user/repo</span>
+<span class="kw">if</span> <span class="kw">first_time_here;</span> <span class="kw">then</span>
+    <span class="kw">if</span> <span class="kw">remote_already_has_gh_pages;</span> <span class="kw">then</span>
+        <span class="kw">git</span> fetch <span class="st">&#39;origin&#39;</span> <span class="st">&#39;gh-pages:refs/remotes/origin/gh-pages&#39;</span>
+        <span class="kw">git</span> checkout <span class="st">&#39;gh-pages&#39;</span>
+    <span class="kw">else</span>
+        <span class="kw">git</span> checkout --orphan <span class="st">&#39;gh-pages&#39;</span>
+        <span class="co"># ... commit index ...</span>
+        <span class="kw">git</span> push origin <span class="st">&#39;gh-pages&#39;</span> --set-upstream
+    <span class="kw">fi</span>
+<span class="kw">fi</span>
+<span class="kw">git</span> pull
+<span class="kw">rsync</span> --archive --delete --exclude=<span class="st">&#39;.git&#39;</span> <span class="st">&quot;</span><span class="ot">${source_dir}</span><span class="st">/&quot;</span> .
+<span class="kw">git</span> add --all
+<span class="kw">git</span> commit
+<span class="kw">git</span> push</code></pre>
+<p>All around it are some nice checks, prompts<br />and commandline argument processing.</p>
+</section>
+</section>
+            </body>
 </html>
