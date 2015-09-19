@@ -33,9 +33,18 @@ HTML_DIR = html
 HTML_INDEX = $(HTML_DIR)/index.html
 HTML_SOURCE = https://github.com/romanpitak/gh-pages
 
-$(HTML_INDEX): *
+$(HTML_INDEX): README.md docs/template.html
 	mkdir --parents "$(HTML_DIR)"
-	tree -H ./ > "$(HTML_INDEX)"
+	pandoc \
+		--smart \
+		--tab-stop=4 \
+		--ascii \
+		--highlight-style=pygments \
+		--table-of-contents --section-divs \
+		--standalone --template=docs/template.html \
+		--from=markdown_github \
+		--to=html5 --output="$@" \
+		README.md
 
 gh-pages: $(HTML_INDEX)
-	gh-pages "$(HTML_DIR)"
+	gh-pages --what-the-commit "$(HTML_DIR)"
