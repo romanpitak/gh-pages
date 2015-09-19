@@ -10,7 +10,7 @@
 
 set -eu
 
-VERSION=0.0.0 # <<< configure
+VERSION=@VERSION@
 
 ###############################################################################
 # Fail with a message and exit.

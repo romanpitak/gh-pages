@@ -21,7 +21,7 @@ Where `html` is the directory containing the html documentation files.
 A `Makefile` target example:
 
 ```make
-gh-pages: html_dir
+push-gh-pages: html_dir
     gh-pages --force $<
 ```
 
@@ -51,19 +51,22 @@ Commits format: "documentation update $(date '+%Y-%m-%d %H:%M:%S')"
 ```bash
 git clone git@github.com:romanpitak/gh-pages.git
 cd gh-pages
-./configure && make && make install
+make install
 ```
 
-By default, the install script copies the `gh-pages` executable to `~/bin`.
+By default, the install script installs the `gh-pages` executable to `~/bin`.
 On first run, the script creates the `~/.gh-pages` directory to store
 the checked out branches.
 
 You can change the installation directory and the command name
-by running `./configure`
-with options `--install-path` or `--invocation-command`.
-For more configuration info run `./configure --help`.
+in the Makefile:
 
-**Pro tip:** `make --dry-run` will show you what will be done.
+```make
+INSTALL_DIR=${HOME}/bin
+INVOCATION_COMMAND=gh-pages
+```
+
+**Pro tip:** `make install --dry-run` will show you exactly what will be done.
 
 ### Uninstall
 

@@ -1,40 +1,54 @@
+###############################################################################
+# Installation settings
+###############################################################################
+INSTALL_DIR=${HOME}/bin
+INVOCATION_COMMAND=gh-pages
 
-INSTALL_PATH=${HOME}/bin# <<< configure
-INVOCATION_COMMAND=gh-pages# <<< configure
-VERSION=0.0.0# <<< configure
+###############################################################################
+# Build settings
+###############################################################################
+VERSION=0.3.1
+BUILD_DIR=build
 
-.PHONY: all clean gh-pages install uninstall
+###############################################################################
+# Dragons below
+###############################################################################
+SRC_DIR=src
 
-gh-pages.sh: src/gh-pages.sh
-	./configure \
-		--silent \
-		--variable-VERSION="$(VERSION)" \
-		--preprocessor-suffix=' # <<< configure' \
-		--in-file="$<" \
-		--out-file="$@"
-	chmod a+x gh-pages.sh
+EXEC_FILE=$(BUILD_DIR)/gh-pages.sh
+DEST_FILE=$(INSTALL_DIR)/$(INVOCATION_COMMAND)
 
-all: gh-pages.sh
+HTML_DIR=$(BUILD_DIR)/html
+HTML_INDEX = $(HTML_DIR)/index.html
+
+.PHONY: all clean docs push-docs install uninstall
+
+all: $(EXEC_FILE)
+
+$(BUILD_DIR):
+	mkdir --parents "$@"
+
+$(EXEC_FILE): $(SRC_DIR)/gh-pages.p.sh $(BUILD_DIR)
+	preprocess --substitute \
+		-D @VERSION@=$(VERSION) \
+		-o $@ $<
 
 clean:
-	rm --force 'gh-pages.sh'
-	rm --recursive --force "$(HTML_DIR)"
+	rm --recursive --force -- "$(BUILD_DIR)"
 
-install: gh-pages.sh
-	mkdir --parents "$(INSTALL_PATH)"
-	cp "$<" "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
+install: $(EXEC_FILE)
+	install --mode=755 --no-target-directory -D "$<" "$(DEST_FILE)"
 
 uninstall:
-	rm --force "$(INSTALL_PATH)/$(INVOCATION_COMMAND)"
+	rm --force -- "$(DEST_FILE)"
 
-# DOCUMENTATION
+push-docs: $(HTML_INDEX)
+	gh-pages --what-the-commit "$(HTML_DIR)"
 
-HTML_DIR = html
-HTML_INDEX = $(HTML_DIR)/index.html
-HTML_SOURCE = https://github.com/romanpitak/gh-pages
+$(HTML_DIR):
+	mkdir --parents "$@"
 
-$(HTML_INDEX): README.md docs/template.html
-	mkdir --parents "$(HTML_DIR)"
+$(HTML_INDEX): README.md docs/template.html $(HTML_DIR)
 	pandoc \
 		--smart \
 		--tab-stop=4 \
@@ -45,6 +59,3 @@ $(HTML_INDEX): README.md docs/template.html
 		--from=markdown_github \
 		--to=html5 --output="$@" \
 		README.md
-
-gh-pages: $(HTML_INDEX)
-	gh-pages --what-the-commit "$(HTML_DIR)"
