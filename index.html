@@ -61,7 +61,7 @@
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gh-pages</span> html</code></pre>
 <p>Where <code>html</code> is the directory containing the html documentation files.</p>
 <p>A <code>Makefile</code> target example:</p>
-<pre class="make"><code>gh-pages: html_dir
+<pre class="make"><code>push-gh-pages: html_dir
     gh-pages --force $&lt;</code></pre>
 </section>
 <section id="synopsis" class="level2">
@@ -87,10 +87,12 @@ gh-pages --version         : print version and exit</code></pre>
 <h2><a href="#installation">Installation</a></h2>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">git</span> clone git@github.com:romanpitak/gh-pages.git
 <span class="kw">cd</span> gh-pages
-<span class="kw">./configure</span> <span class="kw">&amp;&amp;</span> <span class="kw">make</span> <span class="kw">&amp;&amp;</span> <span class="kw">make</span> install</code></pre>
-<p>By default, the install script copies the <code>gh-pages</code> executable to <code>~/bin</code>.<br />On first run, the script creates the <code>~/.gh-pages</code> directory to store<br />the checked out branches.</p>
-<p>You can change the installation directory and the command name<br />by running <code>./configure</code><br />with options <code>--install-path</code> or <code>--invocation-command</code>.<br />For more configuration info run <code>./configure --help</code>.</p>
-<p><strong>Pro tip:</strong> <code>make --dry-run</code> will show you what will be done.</p>
+<span class="kw">make</span> install</code></pre>
+<p>By default, the install script installs the <code>gh-pages</code> executable to <code>~/bin</code>.<br />On first run, the script creates the <code>~/.gh-pages</code> directory to store<br />the checked out branches.</p>
+<p>You can change the installation directory and the command name<br />in the Makefile:</p>
+<pre class="make"><code>INSTALL_DIR=${HOME}/bin
+INVOCATION_COMMAND=gh-pages</code></pre>
+<p><strong>Pro tip:</strong> <code>make install --dry-run</code> will show you exactly what will be done.</p>
 <section id="uninstall" class="level3">
 <h3><a href="#uninstall">Uninstall</a></h3>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">make</span> uninstall
